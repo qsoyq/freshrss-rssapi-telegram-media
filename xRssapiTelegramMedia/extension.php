@@ -6,16 +6,15 @@ class xRssapiTelegramMediaExtension extends Minz_Extension {
     }
 
     public function rewriteEntry($entry) {
-        $link = method_exists($entry, 'link') ? $entry->link() : null;
-        if (!is_string($link) || !preg_match('~^https?://t\.me/([A-Za-z0-9_]+)/([0-9]+)~', $link, $post)) {
+        $feed = method_exists($entry, 'feed') ? $entry->feed() : null;
+        $feedUrl = $feed !== null && method_exists($feed, 'url') ? $feed->url(false) : null;
+        $base = $this->rssapiOrigin($feedUrl);
+        if ($base === null) {
             return $entry;
         }
 
-        $base = rtrim((string) getenv('RSSAPI_URL'), '/');
-        if ($base === '') {
-            $base = 'https://p.19940731.xyz';
-        }
-        if ($base === '') {
+        $link = method_exists($entry, 'link') ? $entry->link() : null;
+        if (!is_string($link) || !preg_match('~^https?://t\.me/([A-Za-z0-9_]+)/([0-9]+)~', $link, $post)) {
             return $entry;
         }
 
@@ -56,6 +55,26 @@ class xRssapiTelegramMediaExtension extends Minz_Extension {
         }
 
         return $entry;
+    }
+
+    private function rssapiOrigin($feedUrl): ?string {
+        if (!is_string($feedUrl)) {
+            return null;
+        }
+
+        $parts = parse_url(html_entity_decode($feedUrl));
+        $scheme = $parts['scheme'] ?? null;
+        $host = $parts['host'] ?? null;
+        $path = $parts['path'] ?? '';
+        if (!is_string($scheme) || !is_string($host) || !is_string($path)) {
+            return null;
+        }
+        if (!preg_match('~^/api/rss/telegram/channel/?$~i', $path)) {
+            return null;
+        }
+
+        $port = isset($parts['port']) ? ':' . $parts['port'] : '';
+        return $scheme . '://' . $host . $port;
     }
 
 }

@@ -2,7 +2,7 @@
   "name": "RSSAPI Telegram Media",
   "author": "qsoyq",
   "description": "Rewrites expired Telegram CDN image URLs to RSSAPI media proxy URLs.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "entrypoint": "extension.php",
   "type": "user",
   "repository": "https://github.com/qsoyq/freshrss-rssapi-telegram-media"

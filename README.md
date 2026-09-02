@@ -18,7 +18,7 @@ cp -R xRssapiTelegramMedia /path/to/FreshRSS/extensions/
 
 Then open **Administration > Extensions** in FreshRSS and enable **RSSAPI Telegram Media** for the affected user.
 
-The extension reads the RSSAPI origin from the `RSSAPI_URL` environment variable. It defaults to `https://p.19940731.xyz`.
+The extension derives the RSSAPI origin from the current subscription URL. For example, a subscription at `https://rss.example.com/api/rss/telegram/channel?channels=meizitu3` produces media URLs on `https://rss.example.com/api/rss/telegram/media/...`. No environment variable is required.
 
 ## Behavior
 
